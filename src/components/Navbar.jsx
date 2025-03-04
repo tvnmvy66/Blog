@@ -1,39 +1,128 @@
-import React from 'react'
-import '../App.css'
+import React, { useState } from "react";
+import {
+  IconSearch,
+  IconUser,
+  IconSettings,
+  IconReceipt,
+  IconHelp,
+  IconLogout,
+} from "@tabler/icons-react";
 
-function Navbar() {
+const Navbar = () => {
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
+  const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
+  const closeDropdown = () => setIsUserDropdownOpen(false);
+
   return (
-    <div className="navbar bg-base-100 shadow-sm">
-  <div className="navbar-start">
-    <div className="dropdown">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /> </svg>
+    <nav className="navbar fixed top-0 left-0 w-full z-50 bg-white navbar justify-between gap-4 shadow">
+      {/* Center Brand Link */}
+      <div className="navbar-center flex items-center">
+        <a
+          className="link text-base-content link-neutral text-xl font-semibold no-underline"
+          href="#"
+        >
+          BlogCellar
+        </a>
       </div>
-      <ul
-        tabIndex={0}
-        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-        <li><a>Homepage</a></li>
-        <li><a>Portfolio</a></li>
-        <li><a>About</a></li>
-      </ul>
-    </div>
-  </div>
-  <div className="navbar-center">
-    <a className="btn btn-ghost text-xl">BlogCellar</a>
-  </div>
-  <div className="navbar-end">
-    <button className="btn btn-ghost btn-circle">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /> </svg>
-    </button>
-    <button className="btn btn-ghost btn-circle">
-      <div className="indicator">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /> </svg>
-        <span className="badge badge-xs badge-primary indicator-item"></span>
-      </div>
-    </button>
-  </div>
-</div>
-  )
-}
 
-export default Navbar
+      {/* Right Actions: Search & User Menu */}
+      <div className="navbar-end items-center gap-4">
+        <button
+          className="btn btn-sm btn-text btn-circle"
+          aria-label="Search Button"
+        >
+          <IconSearch size={22} />
+        </button>
+
+        <div className="relative inline-flex">
+          <button
+            type="button"
+            className="flex items-center"
+            onClick={toggleUserDropdown}
+            aria-expanded={isUserDropdownOpen}
+            aria-label="User Dropdown"
+          >
+            <div className="avatar">
+              <div className="size-9.5 rounded-full">
+                <img
+                  src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png"
+                  alt="avatar"
+                />
+              </div>
+            </div>
+          </button>
+
+          {isUserDropdownOpen && (
+            <ul
+              className="absolute right-0 z-10 bg-white shadow-lg rounded-md p-2 mt-2 min-w-[12rem]"
+              role="menu"
+            >
+              <li className="flex gap-2 items-center p-2">
+                <div className="avatar">
+                  <div className="w-10 rounded-full">
+                    <img
+                      src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png"
+                      alt="avatar"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h6 className="text-base-content text-base font-semibold">
+                    John Doe
+                  </h6>
+                  <small className="text-base-content/50">Admin</small>
+                </div>
+              </li>
+              <hr className="my-2 border-gray-200" />
+              <li>
+                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
+                  <IconUser size={18} className="mr-2" />
+                  My Profile
+                </a>
+              </li>
+              <li>
+                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
+                  <IconSettings size={18} className="mr-2" />
+                  Settings
+                </a>
+              </li>
+              <li>
+                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
+                  <IconReceipt size={18} className="mr-2" />
+                  Billing
+                </a>
+              </li>
+              <li>
+                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
+                  <IconHelp size={18} className="mr-2" />
+                  FAQs
+                </a>
+              </li>
+              <li>
+                <a
+                  className="btn btn-error btn-soft btn-block mt-2"
+                  href="#"
+                >
+                  <IconLogout size={18} className="mr-2" />
+                  Sign out
+                </a>
+              </li>
+            </ul>
+          )}
+        </div>
+      </div>
+
+      {/* Click outside to close dropdown */}
+      {isUserDropdownOpen && (
+        <div
+          className="fixed inset-0 z-0"
+          onClick={closeDropdown}
+          aria-hidden="true"
+        />
+      )}
+    </nav>
+  );
+};
+
+export default Navbar;
