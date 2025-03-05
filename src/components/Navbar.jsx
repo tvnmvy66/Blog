@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from 'react-router-dom'
 import {
   IconSearch,
   IconUser,
@@ -18,22 +19,24 @@ const Navbar = () => {
     <nav className="navbar fixed top-0 left-0 w-full z-50 bg-white navbar justify-between gap-4 shadow">
       {/* Center Brand Link */}
       <div className="navbar-center flex items-center">
-        <a
+        <Link
           className="link text-base-content link-neutral text-xl font-semibold no-underline"
-          href="#"
+          to="/"
         >
           BlogCellar
-        </a>
+        </Link>
       </div>
 
       {/* Right Actions: Search & User Menu */}
       <div className="navbar-end items-center gap-4">
+        <Link to='/search'>
         <button
           className="btn btn-sm btn-text btn-circle"
           aria-label="Search Button"
         >
           <IconSearch size={22} />
         </button>
+        </Link>
 
         <div className="relative inline-flex">
           <button
