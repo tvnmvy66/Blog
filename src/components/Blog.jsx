@@ -1,44 +1,38 @@
-import React from 'react'
-import '../App.css'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import '../App.css';
+import { Link } from 'react-router-dom';
+import Blogpic from '../assets/blog.jpeg';
 
 function Blog(props) {
+  const blogData = [
+    { name: props.name, desp: props.desp },
+    { name: props.name, desp: props.desp },
+    { name: props.name, desp: props.desp },
+    { name: props.name, desp: props.desp },
+  ];
+
   return (
-    <>
-    <Link to={props.name}>
-      <div className="">
-        <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-full mx-4 mt-20 mb-18">
-          <img src={import.meta.env.VITE_REACT_APP_FURL + "/src/assets/blog.jpeg"} alt="University of Southern California" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-          <h3 className="z-10 mt-3 text-3xl font-bold text-white">{props.name}</h3>
-          <div className="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{props.desp}</div>
-        </article>
-      </div>
-      <div className="">
-        <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-full mx-4 mt-20 mb-18">
-          <img src={import.meta.env.VITE_REACT_APP_FURL + "/src/assets/blog.jpeg"} alt="University of Southern California" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-          <h3 className="z-10 mt-3 text-3xl font-bold text-white">{props.name}</h3>
-          <div className="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{props.desp}</div>
-        </article>
-      </div><div className="">
-        <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-full mx-4 mt-20 mb-18">
-          <img src={import.meta.env.VITE_REACT_APP_FURL + "/src/assets/blog.jpeg"} alt="University of Southern California" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-          <h3 className="z-10 mt-3 text-3xl font-bold text-white">{props.name}</h3>
-          <div className="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{props.desp}</div>
-        </article>
-      </div><div className="">
-        <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-full mx-4 mt-20 mb-18">
-          <img src={import.meta.env.VITE_REACT_APP_FURL + "/src/assets/blog.jpeg"} alt="University of Southern California" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-          <h3 className="z-10 mt-3 text-3xl font-bold text-white">{props.name}</h3>
-          <div className="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">{props.desp}</div>
-        </article>
-      </div>
-    </Link>
-    </>
-  )
+    <div className="flex flex-col justify-center items-center gap-2 p-2 mt-16 mb-16">
+      {blogData.map((blog, index) => (
+        <Link to={blog.name} key={index}>
+          <div class="max-w-sm rounded overflow-hidden shadow-lg">
+            <img class="w-full" src={Blogpic} alt="Sunset in the mountains"/>
+              <div class="px-6 py-4">
+                <div class="font-bold text-xl mb-2">{props.name}</div>
+                <p class="text-gray-700 text-base">
+                {props.desp} 
+                </p>
+              </div>
+              <div class="px-6 pt-4 pb-2">
+                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
+                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
+                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
+              </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
 }
 
-export default Blog
+export default Blog;
