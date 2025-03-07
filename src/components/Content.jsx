@@ -10,7 +10,7 @@ const Content = () => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BURL}/blog/${name}`, { withCredentials: true });
+                const res = await axios.get(`${import.meta.env.VITE_BURL}/blog/${name}`, { withCredentials: true });
                 setblogContent(res.data); // Update local state
             } catch (err) {
                 console.error("Error fetching user", err);

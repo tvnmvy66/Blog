@@ -1,7 +1,6 @@
 import {React,useState, useEffect} from "react";
 import "../App.css";
 import { Link } from "react-router-dom";
-import Blogpic from "../assets/blog.jpeg";
 import axios from "axios";
 
 function Blog() {
@@ -10,7 +9,7 @@ function Blog() {
     useEffect(() => {
         const fetchBlog = async () => {
             try {
-                const res = await axios.get(`https://mateapi.vercel.app/blog`, { withCredentials: true });
+                const res = await axios.get(`${import.meta.env.VITE_BURL}/blog`, { withCredentials: true });
                 localStorage.setItem('blog-list', JSON.stringify(res.data));
                 setblogData(res.data); // Update local state
             } catch (err) {

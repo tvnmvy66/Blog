@@ -12,7 +12,7 @@ mongoose.connect(URI)
     .catch((err)=> console.error(err));
 
 const app = express();
-app.use(cors({ origin: [process.env.FURL], credentials: true }));
+app.use(cors({ origin:process.env.FURL, credentials: true }));
 app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;

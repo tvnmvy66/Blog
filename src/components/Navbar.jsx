@@ -117,7 +117,7 @@ const Navbar = () => {
                 </a>
               </li>
               <li>
-              {!(localStorage.getItem('user-info')) ? <div className="mt-2 flex justify-center"><GoogleLogin /></div> : (<a
+              {(localStorage.getItem('user-info')) ? <div className="mt-2 flex justify-center"><GoogleLogin /></div> : (<a
                   className="btn btn-error btn-soft btn-block mt-2"
                   href="#"
                 >
