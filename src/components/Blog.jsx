@@ -1,36 +1,45 @@
-import React from 'react';
-import '../App.css';
-import { Link } from 'react-router-dom';
-import Blogpic from '../assets/blog.jpeg';
+import {React,useState, useEffect} from "react";
+import "../App.css";
+import { Link } from "react-router-dom";
+import Blogpic from "../assets/blog.jpeg";
+import axios from "axios";
 
-function Blog(props) {
-  const blogData = [
-    { name: props.name, desp: props.desp },
-    { name: props.name, desp: props.desp },
-    { name: props.name, desp: props.desp },
-    { name: props.name, desp: props.desp },
-  ];
+function Blog() {
+  const [blogData, setblogData] = useState(null);
+
+    useEffect(() => {
+        const fetchBlog = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BURL}/blog`, { withCredentials: true });
+                localStorage.setItem('bloglist', JSON.stringify(res.data));
+                setblogData(res.data); // Update local state
+            } catch (err) {
+                console.error("Error fetching user", err);
+            }
+        };
+
+        fetchBlog();
+    }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center gap-2 p-2 mt-16 mb-16">
-      {blogData.map((blog, index) => (
-        <Link to={blog.name} key={index}>
-          <div class="max-w-sm rounded overflow-hidden shadow-lg">
-            <img class="w-full" src={Blogpic} alt="Sunset in the mountains"/>
-              <div class="px-6 py-4">
-                <div class="font-bold text-xl mb-2">{props.name}</div>
-                <p class="text-gray-700 text-base">
-                {props.desp} 
-                </p>
-              </div>
-              <div class="px-6 pt-4 pb-2">
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#photography</span>
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#travel</span>
-                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
-              </div>
-          </div>
+    <div className="px-2">
+      {blogData ? (blogData.map((blogData, index) => (
+        <Link to={blogData._id} key={index}>
+          <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-18 mb-18 ">
+            <img
+              src={blogData.blogpic}
+              alt="University of Southern California"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+            <h3 className="z-10 mt-3 text-3xl font-bold text-white">{blogData.title}</h3>
+            <div className="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+            {blogData.desp}
+            </div>
+          </article>
         </Link>
-      ))}
+      ))):<div>hello err);
+      </div>}
     </div>
   );
 }
