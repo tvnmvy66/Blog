@@ -17,18 +17,19 @@ const Navbar = () => {
   const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
   const closeDropdown = () => setIsUserDropdownOpen(false);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BURL}/user`, { withCredentials: true });
-                localStorage.setItem('user-info', JSON.stringify(res.data));
-            } catch (err) {
-                console.error("Error fetching user", err);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchUser = async () => {
+    //         try {
+    //             const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BURL}/user`, { withCredentials: true });
+    //             localStorage.setItem('user-info', JSON.stringify(res.data));
+    //         } catch (err) {
+    //             console.error("Error fetching user", err);
+    //         }
+    //     };
 
-        fetchUser();
-    }, []);
+    //     fetchUser();
+    // }, []);
+    
   return (
     <nav className="navbar fixed top-0 left-0 w-full z-50 bg-white navbar justify-between gap-4 shadow">
       {/* Center Brand Link */}
@@ -117,7 +118,7 @@ const Navbar = () => {
                 </a>
               </li>
               <li>
-              {(localStorage.getItem('user-info')) ? <div className="mt-2 flex justify-center"><GoogleLogin /></div> : (<a
+              {(localStorage.getItem('user-info')) ? <div className="mt-2 flex justify-center">login</div> : (<a
                   className="btn btn-error btn-soft btn-block mt-2"
                   href="#"
                 >
