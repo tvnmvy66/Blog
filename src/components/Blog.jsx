@@ -11,7 +11,7 @@ function Blog() {
         const fetchBlog = async () => {
             try {
                 const res = await axios.get(`${import.meta.env.VITE_REACT_APP_BURL}/blog`, { withCredentials: true });
-                localStorage.setItem('bloglist', JSON.stringify(res.data));
+                localStorage.setItem('blog-list', JSON.stringify(res.data));
                 setblogData(res.data); // Update local state
             } catch (err) {
                 console.error("Error fetching user", err);
