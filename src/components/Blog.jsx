@@ -9,7 +9,7 @@ function Blog() {
     useEffect(() => {
         const fetchBlog = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_BURL}/blog`, { withCredentials: true });
+                const res = await axios.get(`https://blogapi-h7b6.onrender.com/blog`, { withCredentials: true });
                 localStorage.setItem('blog-list', JSON.stringify(res.data));
                 setblogData(res.data); // Update local state
             } catch (err) {
