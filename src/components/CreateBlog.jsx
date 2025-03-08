@@ -1,16 +1,54 @@
-import React from 'react'
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
-function CreateBlog() {
+const CreateBlog = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: `${import.meta.env.VITE_BURL}/newpost`,
+        data: data,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      console.log("Blog created:", response.data);
+    } catch (error) {
+      console.error("Error creating blog:", error);
+    }
+  };
+
   return (
-    <>
-    <div className='mt-17 flex flex-col items-center'>
-        <div>title : <input type="text" /></div>
-        <div>desp : <input type="text" /></div>
-        <div>COntent : <input type="text" /></div>
-        <div><button onClick={()=>{alert('ihave been clicked!!!')}}>Share</button></div>
-    </div>
-    </>
-  )
-}
+    <div className="mt-20 flex flex-col items-center">
+    <form onSubmit={handleSubmit(onSubmit)} className="">
+      <div>
+      <label>title : </label>
+        <input
+          {...register("title", { required: "Name is required" })}
+        />
+        {errors.name && <span>{errors.name.message}</span>}
+      </div>
+      <div>
+      <label>Description : </label>
+        <input
+          {...register("desp", { required: "description is required" })}
+        />
+        {errors.name && <span>{errors.name.message}</span>}
+      </div>
+      <div>
+      <label>Content : </label>
+        <input
+          {...register("content", { required: "content is required" })}
+        />
+        {errors.name && <span>{errors.name.message}</span>}
+      </div>
 
-export default CreateBlog
+      <button type="submit">Submit</button>
+    </form>
+    </div>
+  );
+};
+
+export default CreateBlog;

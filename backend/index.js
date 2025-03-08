@@ -14,6 +14,9 @@ mongoose.connect(URI)
 const app = express();
 app.use(cors({ origin:process.env.FURL, credentials: true }));
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 
 const PORT = process.env.PORT || 3000;
 
@@ -39,6 +42,18 @@ app.get("/blog/:id",async (req, res) => {
         res.status(401).json({ message: "no id found" });
     }
 });
+
+app.post("/newpost", async (req, res) => {
+    try {
+      const { title, desp, content} = req.body;
+      console.log(title)
+      const newBlog = await Blog.create({ title, desp, content});
+      res.status(201).json(newBlog);
+    } catch (error) {
+      console.log('some error')
+      res.status(500).json({ error: "Failed to create blog" });
+    }
+  });
 
 // Only start server in local environment
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
