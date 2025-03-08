@@ -3,7 +3,9 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const mongoose = require('mongoose')
 const Blog = require('./models/blog')
-
+const User = require('./models/user')
+const jwt = require('jsonwebtoken')
+const axios = require('axios')
 require("dotenv").config();
 
 URI = process.env.MONGO_URI;
@@ -54,6 +56,67 @@ app.post("/newpost", async (req, res) => {
       res.status(500).json({ error: "Failed to create blog" });
     }
   });
+
+// Google OAuth callback endpoint
+app.get("/auth/google/callback", async (req, res) => {
+    const { code } = req.query;
+    if (!code) return res.status(400).send("Code not found");
+
+    try {
+        // Exchange code for access token
+        const { data } = await axios.post(
+            "https://oauth2.googleapis.com/token",
+            {
+                client_id: process.env.CLIENT_ID,
+                client_secret: process.env.CLIENT_SECRET,
+                code,
+                grant_type: "authorization_code",
+                redirect_uri: `${process.env.BURL}/auth/google/callback`,
+            },
+            { headers: { "Content-Type": "application/json" } }
+        );
+
+        // Get user profile
+        const { data: user } = await axios.get(
+            "https://www.googleapis.com/oauth2/v2/userinfo",
+            { headers: { Authorization: `Bearer ${data.access_token}` } }
+        );
+        const DBuser = await User.create({
+            email: user.email,
+            name: user.name,
+            picture: user.picture,
+            verifiedEmail: true
+          })
+        console.log(DBuser);
+        // Generate JWT token
+        const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+        // Store token in cookies
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true, // Set to true in production
+            sameSite: "None",
+        });
+
+        res.redirect(`${process.env.FURL}/`);
+    } catch (error) {
+        console.error("OAuth Error:", error.response?.data || error.message);
+        res.status(500).send("Authentication failed");
+    }
+});
+
+// Get user details from token
+app.get("/user", (req, res) => {
+    const { token } = req.cookies;
+    if (!token) return res.status(401).json({ message: `Unauthorized : ${req.cookies}` });
+
+    try {
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+        res.json(user);
+    } catch (error) {
+        res.status(401).json({ message: "Invalid token" });
+    }
+});
 
 // Only start server in local environment
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

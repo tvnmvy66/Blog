@@ -2,11 +2,10 @@ import React from "react";
 
 const GoogleLogin = () => {
   const handleLogin = () => {
-    const CLIENT_ID = import.meta.env.VITE_REACT_APP_CLIENT_ID;
-    const REDIRECT_URI = `${import.meta.env.VITE_REACT_APP_BURL}/blogauth/google/callback`;
+    const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+    const REDIRECT_URI = `${import.meta.env.VITE_BURL}/auth/google/callback`;
     const SCOPE = "openid email profile";
     const AUTH_URL = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${SCOPE}&access_type=online`;
-
     window.location.href = AUTH_URL;
   };
   return (
