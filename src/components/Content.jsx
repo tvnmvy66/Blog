@@ -19,8 +19,14 @@ const Content = () => {
         fetchUser();
     }, []);
   return (
-  <div className=' mt-18'>
-    Content for {blogContent ? <div>{blogContent.title}</div> : null}
+  <div className=''>
+    {blogContent ? 
+    <div className='mt-18 flex flex-col items-center'>
+    <img src={blogContent.blogpic} alt="blogpic" className='absolute h-65  rounded-2xl p-2'/>
+    <h2 className='relative pt-50 pl-5 text-white font-sans'>{blogContent.title}</h2>
+    <p className='absolute pt-65 pl-5 pr-5 pb-17 text-black font-sans w-sm '>{blogContent.content}
+    </p>
+    </div>: null}
   </div>
 );
 };

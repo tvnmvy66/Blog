@@ -1,6 +1,7 @@
 import './App.css'
 import Blog from './components/Blog'
 import Content from './components/Content';
+import CreateBlog from './components/CreateBlog';
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import Search from './components/Search'
@@ -13,9 +14,11 @@ function App() {
     <main className='h-screen overflow-y-scroll scrollbar-hide'>
     <Navbar/>
     <Routes>
-          <Route path="/" element={<Blog name="Paris" desp="City of Love"/>} />
+          <Route path="/" element={<Blog/>} />
           <Route path="/search" element={<Search/>} />
-          <Route path="/:name" element={<Content name='1'/>} />
+          <Route path="/:name" element={<Content/>} />
+          <Route path="/newpost" element={<CreateBlog/>} />
+
     </Routes>
     <Footer/>
     </main>
