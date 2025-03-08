@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from "react";
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   IconSearch,
   IconUser,
@@ -9,27 +9,40 @@ import {
   IconLogout,
 } from "@tabler/icons-react";
 import axios from "axios";
-import GoogleLogin from './GoogleLogin'
+import GoogleLogin from "./GoogleLogin";
 
 const Navbar = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-
+  const [user,setUser] = useState(null)
   const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
   const closeDropdown = () => setIsUserDropdownOpen(false);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_BURL}/user`, {
+          withCredentials: true,
+        });
+        localStorage.setItem("user-info", JSON.stringify(res.data));
+        setUser(res.data)
+      } catch (err) {
+        console.error("Error fetching user", err);
+      }
+    };
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_BURL}/user`, { withCredentials: true });
-                localStorage.setItem('user-info', JSON.stringify(res.data));
-            } catch (err) {
-                console.error("Error fetching user", err);
-            }
-        };
-
-        fetchUser();
-    }, []);
-    
+    fetchUser();
+  }, []);
+  const handleSignOut = async () => {
+    try {
+        await axios.get(`${import.meta.env.VITE_BURL}/signout`, {
+            withCredentials: true // Send cookies with the request
+        });
+        localStorage.clear();
+        sessionStorage.clear();
+        console.log('Signed out successfully');
+    } catch (error) {
+        console.error('Error signing out:', error.response?.data || error.message);
+    }
+  };
   return (
     <nav className="navbar fixed top-0 left-0 w-full z-50 bg-white navbar justify-between gap-4 shadow">
       {/* Center Brand Link */}
@@ -44,13 +57,13 @@ const Navbar = () => {
 
       {/* Right Actions: Search & User Menu */}
       <div className="navbar-end items-center gap-4">
-        <Link to='/search'>
-        <button
-          className="btn btn-sm btn-text btn-circle"
-          aria-label="Search Button"
-        >
-          <IconSearch size={22} />
-        </button>
+        <Link to="/search">
+          <button
+            className="btn btn-sm btn-text btn-circle"
+            aria-label="Search Button"
+          >
+            <IconSearch size={22} />
+          </button>
         </Link>
 
         <div className="relative inline-flex">
@@ -77,54 +90,60 @@ const Navbar = () => {
               role="menu"
             >
               <li className="flex gap-2 items-center p-2">
-                <div className="avatar">
-                  <div className="w-10 rounded-full">
+                {localStorage.getItem("user-info") ? (<div>
+                  <div className="avatar">
+                  <div className="h-10 w-10 rounded-full">
+                    <img
+                      src={user.picture}
+                      alt="avatar"
+                    />
+                  </div>
+                </div>
+                  <div>
+                    <h6 className="text-base-content text-base font-semibold">
+                      {user.name}
+                    </h6>
+                    <small className="text-base-content/50">User</small>
+                  </div></div>
+                ) : (
+                  <div>
+                  <div className="avatar">
+                  <div className="h-10 w-10 rounded-full">
                     <img
                       src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png"
                       alt="avatar"
                     />
                   </div>
                 </div>
-                <div>
-                  <h6 className="text-base-content text-base font-semibold">
-                    John Doe
-                  </h6>
-                  <small className="text-base-content/50">Admin</small>
-                </div>
+                  <div>
+                    <h6 className="text-base-content text-base font-semibold">
+                      User
+                    </h6>
+                    <small className="text-base-content/50">User</small>
+                  </div></div>
+                )}
               </li>
               <hr className="my-2 border-gray-200" />
               <li>
-                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
-                  <IconUser size={18} className="mr-2" />
-                  My Profile
-                </a>
-              </li>
-              <li>
-                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
-                  <IconSettings size={18} className="mr-2" />
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
-                  <IconReceipt size={18} className="mr-2" />
-                  Billing
-                </a>
-              </li>
-              <li>
-                <a className="flex items-center p-2 hover:bg-gray-100" href="#">
-                  <IconHelp size={18} className="mr-2" />
-                  FAQs
-                </a>
-              </li>
-              <li>
-              {!(localStorage.getItem('user-info')) ? <div className="mt-2 flex justify-center"><GoogleLogin/></div> : (<a
-                  className="btn btn-error btn-soft btn-block mt-2"
-                  href="#"
+                <a
+                  className="flex items-center p-2 hover:bg-gray-100"
+                  href="/myblog"
                 >
-                  <IconLogout size={18} className="mr-2" />
-                  Sign out
-                </a>)}
+                  <IconUser size={18} className="mr-2" />
+                  My Blog
+                </a>
+              </li>
+              <li>
+                {!localStorage.getItem("user-info") ? (
+                  <div className="mt-2 flex justify-center">
+                    <GoogleLogin />
+                  </div>
+                ) : (
+                  <div className="btn btn-error btn-soft btn-block mt-2" onClick={()=>{handleSignOut()}}>
+                    <IconLogout size={18} className="mr-2" />
+                    Sign out
+                  </div>
+                )}
               </li>
             </ul>
           )}

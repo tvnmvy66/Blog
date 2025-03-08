@@ -12,7 +12,8 @@ const CreateBlog = () => {
         data: data,
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        withCredentials: true
       });
       console.log("Blog created:", response.data);
     } catch (error) {

@@ -46,10 +46,16 @@ app.get("/blog/:id",async (req, res) => {
 });
 
 app.post("/newpost", async (req, res) => {
+    const { token } = req.cookies;
+    console.log(token)
+    if (!token) return res.status(401).json({ message: `Unauthorized : ${JSON.stringify(req.cookies)}` });
+    
     try {
       const { title, desp, content} = req.body;
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+      const userExits = await User.findOne({ email : user.email})
       console.log(title)
-      const newBlog = await Blog.create({ title, desp, content});
+      const newBlog = await Blog.create({createrId : userExits.id ,title, desp, content});
       res.status(201).json(newBlog);
     } catch (error) {
       console.log('some error')
@@ -81,13 +87,18 @@ app.get("/auth/google/callback", async (req, res) => {
             "https://www.googleapis.com/oauth2/v2/userinfo",
             { headers: { Authorization: `Bearer ${data.access_token}` } }
         );
-        const DBuser = await User.create({
-            email: user.email,
-            name: user.name,
-            picture: user.picture,
-            verifiedEmail: true
-          })
-        console.log(DBuser);
+
+        const userExits = await User.findOne({ email : user.email})
+        if (!userExits) {
+            await User.create({
+                email: user.email,
+                name: user.name,
+                picture: user.picture,
+                verifiedEmail: true
+            });
+        } else {
+            console.log('User already exists');
+        } 
         // Generate JWT token
         const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1h" });
 
@@ -106,18 +117,44 @@ app.get("/auth/google/callback", async (req, res) => {
 });
 
 // Get user details from token
-app.get("/user", (req, res) => {
+app.get("/user",async (req, res) => {
     const { token } = req.cookies;
-    if (!token) return res.status(401).json({ message: `Unauthorized : ${req.cookies}` });
+    if (!token) return res.status(401).json({ message: `Unauthorized : ${JSON.stringify(req.cookies)}` });
 
     try {
         const user = jwt.verify(token, process.env.JWT_SECRET);
-        res.json(user);
+        const userExits = await User.findOne({ email : user.email })
+        res.json(userExits);
     } catch (error) {
         res.status(401).json({ message: "Invalid token" });
     }
 });
 
+app.get("/myblog",async (req, res) => {
+    try {
+        const { token } = req.cookies;
+        if (!token) return res.status(401).json({ message: `Unauthorized : ${JSON.stringify(req.cookies)}` });
+
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+        const userExits = await User.findOne({email : user.email})
+        const myblog = await Blog.find({ createrId : userExits.id})
+        res.json(myblog);
+    } catch (error) {
+        res.status(401).json({ message: "no id found" });
+    }
+});
+
+// Sign-out route
+app.get('/signout', (req, res) => {
+    // Clear the authentication cookie
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true, // true in production
+        sameSite: 'None' // 'Lax' or 'Strict' if not cross-origin
+    });
+    
+    res.status(200).json({ message: 'Signed out successfully' });
+});
 // Only start server in local environment
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
