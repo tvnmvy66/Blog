@@ -90,7 +90,7 @@ const Navbar = () => {
               role="menu"
             >
               <li className="flex gap-2 items-center p-2">
-                {!localStorage.getItem("user-info") ? (<div>
+                {localStorage.getItem("user-info") ? (<div>
                   <div className="avatar">
                   <div className="h-10 w-10 rounded-full">
                     <img
