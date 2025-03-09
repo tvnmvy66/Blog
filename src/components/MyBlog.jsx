@@ -22,7 +22,7 @@ function MyBlog() {
 
   return (
     <div className="px-2">
-      {myblogData?.map((myblogData, index) => (
+      {localStorage.getItem('myblog') ? (myblogData.map((myblogData, index) => (
         <Link to={myblogData?._id} key={index}>
           <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-18 mb-18 ">
             <img
@@ -37,7 +37,7 @@ function MyBlog() {
             </div>
           </article>
         </Link>
-      ))}
+      ))): <div className="mt-20">hello err:)</div>}
     </div>
   );
 }
