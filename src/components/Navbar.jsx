@@ -10,12 +10,14 @@ import {
 } from "@tabler/icons-react";
 import axios from "axios";
 import GoogleLogin from "./GoogleLogin";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [user,setUser] = useState(null)
+  const [user, setUser] = useState(localStorage.getItem("user-info"));
   const toggleUserDropdown = () => setIsUserDropdownOpen(!isUserDropdownOpen);
   const closeDropdown = () => setIsUserDropdownOpen(false);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -23,7 +25,7 @@ const Navbar = () => {
           withCredentials: true,
         });
         localStorage.setItem("user-info", JSON.stringify(res.data));
-        setUser(res.data)
+        setUser(res.data);
       } catch (err) {
         console.error("Error fetching user", err);
       }
@@ -33,14 +35,17 @@ const Navbar = () => {
   }, []);
   const handleSignOut = async () => {
     try {
-        await axios.get(`${import.meta.env.VITE_BURL}/signout`, {
-            withCredentials: true // Send cookies with the request
-        });
-        localStorage.clear();
-        sessionStorage.clear();
-        console.log('Signed out successfully');
+      await axios.get(`${import.meta.env.VITE_BURL}/signout`, {
+        withCredentials: true, // Send cookies with the request
+      });
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log("Signed out successfully");
     } catch (error) {
-        console.error('Error signing out:', error.response?.data || error.message);
+      console.error(
+        "Error signing out:",
+        error.response?.data || error.message
+      );
     }
   };
   return (
@@ -90,37 +95,37 @@ const Navbar = () => {
               role="menu"
             >
               <li className="flex gap-2 items-center p-2">
-                {localStorage.getItem("user-info") ? (<div>
-                  <div className="avatar">
-                  <div className="h-10 w-10 rounded-full">
-                    <img
-                      src={user?.picture}
-                      alt="avatar"
-                    />
-                  </div>
-                </div>
+                {localStorage.getItem("user-info") ? (
                   <div>
-                    <h6 className="text-base-content text-base font-semibold">
-                      {user?.name}
-                    </h6>
-                    <small className="text-base-content/50">User</small>
-                  </div></div>
+                    <div className="avatar">
+                      <div className="h-10 w-10 rounded-full">
+                        <img src={user?.picture} alt="avatar" />
+                      </div>
+                    </div>
+                    <div>
+                      <h6 className="text-base-content text-base font-semibold">
+                        {user?.name}
+                      </h6>
+                      <small className="text-base-content/50">User</small>
+                    </div>
+                  </div>
                 ) : (
                   <div>
-                  <div className="avatar">
-                  <div className="h-10 w-10 rounded-full">
-                    <img
-                      src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png"
-                      alt="avatar"
-                    />
+                    <div className="avatar">
+                      <div className="h-10 w-10 rounded-full">
+                        <img
+                          src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png"
+                          alt="avatar"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <h6 className="text-base-content text-base font-semibold">
+                        User
+                      </h6>
+                      <small className="text-base-content/50">User</small>
+                    </div>
                   </div>
-                </div>
-                  <div>
-                    <h6 className="text-base-content text-base font-semibold">
-                      User
-                    </h6>
-                    <small className="text-base-content/50">User</small>
-                  </div></div>
                 )}
               </li>
               <hr className="my-2 border-gray-200" />
@@ -139,7 +144,12 @@ const Navbar = () => {
                     <GoogleLogin />
                   </div>
                 ) : (
-                  <div className="btn btn-error btn-soft btn-block mt-2" onClick={()=>{handleSignOut()}}>
+                  <div
+                    className="btn btn-error btn-soft btn-block mt-2"
+                    onClick={() => {
+                      handleSignOut();
+                    }}
+                  >
                     <IconLogout size={18} className="mr-2" />
                     Sign out
                   </div>

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 function Blog() {
-  const [blogData, setblogData] = useState(null);
+  const [blogData, setblogData] = useState([localStorage.getItem('blog-list')]);
 
     useEffect(() => {
         const fetchBlog = async () => {
@@ -22,23 +22,22 @@ function Blog() {
 
   return (
     <div className="px-2">
-      {blogData ? (blogData.map((blogData, index) => (
-        <Link to={blogData._id} key={index}>
+      {localStorage.getItem('blog-list') ? (blogData.map((blogData, index) => (
+        <Link to={blogData?._id} key={index}>
           <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl px-8 pb-8 pt-40 max-w-sm mx-auto mt-18 mb-18 ">
             <img
-              src={blogData.blogpic}
+              src={blogData?.blogpic}
               alt="University of Southern California"
               className="absolute inset-0 h-full w-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
-            <h3 className="z-10 mt-3 text-3xl font-bold text-white">{blogData.title}</h3>
+            <h3 className="z-10 mt-3 text-3xl font-bold text-white">{blogData?.title}</h3>
             <div className="z-10 gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
-            {blogData.desp}
+            {blogData?.desp}
             </div>
           </article>
         </Link>
-      ))):<div>hello err);
-      </div>}
+      ))) : console.log('null')}
     </div>
   );
 }
